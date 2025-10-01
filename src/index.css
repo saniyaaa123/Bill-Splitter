@@ -1,0 +1,6 @@
+/* Using Tailwind via CDN in index.html */
+/* No @tailwind directives needed when using the CDN. */
+/* Add any custom CSS below */
+
+/* Example custom styles */
+body { font-family: ui-sans-serif, system-ui, -apple-system, "Segoe UI", Roboto, "Helvetica Neue", Arial; }
