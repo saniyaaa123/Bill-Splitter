@@ -11,6 +11,7 @@ function App() {
   const [items, setItems] = useState([]);
   const [splitData, setSplitData] = useState(null);
   const [isManual, setIsManual] = useState(false);
+  const [currency, setCurrency] = useState('INR');
 
   const handleNavigate = (page) => {
     if (page === 'manual') {
@@ -49,15 +50,24 @@ function App() {
         <BillItems
           items={items}
           setItems={setItems}
+           currency={currency}
+          setCurrency={setCurrency}
           onNavigate={handleNavigate}
           isManual={isManual}
         />
       )}
       {currentPage === 'addpeople' && (
-        <AddPeople items={items} onNavigate={handleNavigate} onSplit={handleSplit} />
+        <AddPeople items={items}
+         onNavigate={handleNavigate}
+          onSplit={handleSplit} 
+          currency={currency}/>
       )}
       {currentPage === 'result' && splitData && (
-        <Result splitData={splitData} items={items} onNavigate={handleNavigate} />
+        <Result 
+        splitData={splitData} 
+        items={items} 
+        onNavigate={handleNavigate} 
+        currency={currency}/>
       )}
     </div>
   );

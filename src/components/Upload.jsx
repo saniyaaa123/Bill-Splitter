@@ -17,10 +17,8 @@ const Upload = ({ onNavigate, onImageProcess }) => {
     setProgress(0);
 
     try {
-      // Preprocess image for better OCR accuracy
       const preprocessedImage = await preprocessImage(file);
 
-      // Run Tesseract OCR with progress tracking
       const { data: { text } } = await Tesseract.recognize(
         preprocessedImage,
         'eng',
@@ -35,7 +33,6 @@ const Upload = ({ onNavigate, onImageProcess }) => {
 
       console.log("OCR Extracted Text:", text);
 
-      // Parse the extracted text to find items and prices
       const items = parseReceiptText(text);
 
       if (items.length === 0) {
@@ -55,7 +52,6 @@ const Upload = ({ onNavigate, onImageProcess }) => {
     }
   };
 
-  // Preprocess image for better OCR
   const preprocessImage = (file) => {
     return new Promise((resolve) => {
       const reader = new FileReader();
@@ -65,7 +61,6 @@ const Upload = ({ onNavigate, onImageProcess }) => {
           const canvas = document.createElement('canvas');
           const ctx = canvas.getContext('2d');
 
-          // Resize for optimal OCR
           const MAX_WIDTH = 1500;
           const MAX_HEIGHT = 1500;
           let width = img.width;
@@ -86,10 +81,8 @@ const Upload = ({ onNavigate, onImageProcess }) => {
           canvas.width = width;
           canvas.height = height;
 
-          // Draw and enhance image
           ctx.drawImage(img, 0, 0, width, height);
 
-          // Increase contrast for better OCR
           const imageData = ctx.getImageData(0, 0, width, height);
           const data = imageData.data;
           const contrast = 1.5;
@@ -110,7 +103,6 @@ const Upload = ({ onNavigate, onImageProcess }) => {
     });
   };
 
-  // Parse receipt text to extract items and prices
   const parseReceiptText = (text) => {
     const items = [];
     const lines = text.split('\n');
@@ -119,24 +111,20 @@ const Upload = ({ onNavigate, onImageProcess }) => {
       line = line.trim();
       if (!line) continue;
 
-      // Pattern 1: "Item Name    $12.50" or "Item Name    12.50"
       let match = line.match(/^(.+?)\s{2,}[\$]?(\d+\.?\d{0,2})$/);
       
       if (!match) {
-        // Pattern 2: "Item Name 12.50" (single space before price)
+        
         match = line.match(/^(.+?)\s+[\$]?(\d+\.?\d{0,2})$/);
       }
       
       if (!match) {
-        // Pattern 3: "Item Name - $12.50"
         match = line.match(/^(.+?)\s*[-–]\s*[\$]?(\d+\.?\d{0,2})$/);
       }
       
       if (!match) {
-        // Pattern 4: "12.50 Item Name" (price first)
         match = line.match(/^[\$]?(\d+\.?\d{0,2})\s+(.+)$/);
         if (match) {
-          // Swap price and name
           match = [match[0], match[2], match[1]];
         }
       }
@@ -145,7 +133,6 @@ const Upload = ({ onNavigate, onImageProcess }) => {
         const itemName = match[1].trim();
         const price = parseFloat(match[2]);
 
-        // Filter out invalid entries
         if (itemName.length > 1 && 
             price > 0 && 
             price < 10000 &&
@@ -164,7 +151,6 @@ const Upload = ({ onNavigate, onImageProcess }) => {
       }
     }
 
-    // Remove duplicates
     const uniqueItems = items.filter((item, index, self) =>
       index === self.findIndex((t) => t.item === item.item && t.price === item.price)
     );
